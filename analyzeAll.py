@@ -11,11 +11,13 @@
 
 # load the very latest version
 import sys
-sys.path.append("/Users/andyreagan/tools/python/labMTsimple/")
+# sys.path.append("/Users/andyreagan/tools/python/labMTsimple/")
+sys.path.append("/Users/andyreagan/tools/python")
+from kitchentable.dogtoys import *
+from labMTsimple.labMTsimple.speedy import *
+from labMTsimple.labMTsimple.storyLab import *
 # for the VACC, doesn't hurt to have both
 sys.path.append("/users/a/r/areagan/work/2014/03-labMTsimple/")
-from labMTsimple.speedy import *
-from labMTsimple.storyLab import *
 
 import re
 import codecs
@@ -45,12 +47,10 @@ from subprocess import call
 from scipy.stats import pearsonr
 
 error_logging = True
-sys.path.append("/Users/andyreagan/tools/python/kitchentable")
-from dogtoys import *
 
 def loadMovieReviews():
-    posfiles = ["data/moviereviews/txt_sentoken/pos/"+x for x in listdir("data/moviereviews/txt_sentoken/pos") if ".txt" in x]
-    negfiles = ["data/moviereviews/txt_sentoken/neg/"+x for x in listdir("data/moviereviews/txt_sentoken/neg") if ".txt" in x]
+    posfiles = ["../data/moviereviews/txt_sentoken/pos/"+x for x in listdir("../data/moviereviews/txt_sentoken/pos") if ".txt" in x]
+    negfiles = ["../data/moviereviews/txt_sentoken/neg/"+x for x in listdir("../data/moviereviews/txt_sentoken/neg") if ".txt" in x]
     poswordcounts = dict()
     allwordcounts = dict()
     for file in posfiles:
@@ -82,8 +82,8 @@ def loadMovieReviews():
 
 def loadMovieReviewsBoth():
     flip = "pos"
-    pos_files = ["data/moviereviews/txt_sentoken/{0}/{1}".format(flip,x.replace(".txt",""))
-             for x in listdir("data/moviereviews/txt_sentoken/{0}/".format(flip)) if ".txt" in x]
+    pos_files = ["../data/moviereviews/txt_sentoken/{0}/{1}".format(flip,x.replace(".txt",""))
+             for x in listdir("../data/moviereviews/txt_sentoken/{0}/".format(flip)) if ".txt" in x]
     pos_wordcounts = dict()
     for file in pos_files:
         # this loads the files
@@ -93,8 +93,8 @@ def loadMovieReviewsBoth():
         # add to the full dict
         dictify_general(rawtext,pos_wordcounts)
     flip = "neg"
-    neg_files = ["data/moviereviews/txt_sentoken/{0}/{1}".format(flip,x.replace(".txt",""))
-             for x in listdir("data/moviereviews/txt_sentoken/{0}/".format(flip)) if ".txt" in x]
+    neg_files = ["../data/moviereviews/txt_sentoken/{0}/{1}".format(flip,x.replace(".txt",""))
+             for x in listdir("../data/moviereviews/txt_sentoken/{0}/".format(flip)) if ".txt" in x]
     neg_wordcounts = dict()
     for file in neg_files:
         # this loads the files
@@ -106,8 +106,8 @@ def loadMovieReviewsBoth():
 
     return (pos_wordcounts,neg_wordcounts)
 
-word_dict_location = "data/twitter/word-dicts/"
-word_vector_location = "data/twitter/word-vectors/"
+word_dict_location = "../data/twitter/word-dicts/"
+word_vector_location = "../data/twitter/word-vectors/"
 # word_dict_location = "/users/a/r/areagan/scratch/realtime-parsing/word-dicts/"
 # word_vector_location = "/users/a/r/areagan/scratch/realtime-parsing/word-vectors/"
 
@@ -321,7 +321,7 @@ def twitter_addyears_local(my_senti_dict):
 
         times,timeseries,my_word_vec = twitter_timeseries_day_local(start,end,resolution,my_senti_dict,stopVal,return_total=True)
 
-        f = open("data/twitter/{1}-{0}.csv".format(my_senti_dict.title,year),"w")
+        f = open("../data/twitter/{1}-{0}.csv".format(my_senti_dict.title,year),"w")
         f.write("\n".join(list(map(lambda x: "{0:.0f}".format(x),my_word_vec))))
         f.close()
 
@@ -333,7 +333,7 @@ def twitter_shiftyears(my_senti_dict,stopVal=0.0,j=0):
 
     for year in range(2008,2016):
         print("opening year {} to add it up".format(year))
-        f = open("data/twitter/{1}-{0}.csv".format(my_senti_dict.title,year),"r")
+        f = open("../data/twitter/{1}-{0}.csv".format(my_senti_dict.title,year),"r")
         my_word_vec = np.array(map(float,f.read().split("\n")))
         f.close()
         # this does not give equal weight to each year....
@@ -345,7 +345,7 @@ def twitter_shiftyears(my_senti_dict,stopVal=0.0,j=0):
 
     for year in range(2008,2016):
         print("opening year {} to shift against bg".format(year))
-        f = open("data/twitter/{1}-{0}.csv".format(my_senti_dict.title,year),"r")
+        f = open("../data/twitter/{1}-{0}.csv".format(my_senti_dict.title,year),"r")
         my_word_vec = np.array(map(float,f.read().split("\n")))
         f.close()
 
@@ -599,10 +599,10 @@ def loadTwitter():
     # fname = "data/twitter/allwordcounts.dict"
     # pickle.dump( allwordcounts , open( fname , "wb" ) )
 
-    fname = "data/twitter/allwordcounts.dict"
+    fname = "../data/twitter/allwordcounts.dict"
     allwordcounts = pickle.load( open( fname , "rb" ) )
 
-    # allwordcounts = pickle.load( open("data/twitter/word-dicts/2015-07-01/2015-07-01-00-00.dict","rb") )
+    # allwordcounts = pickle.load( open("../data/twitter/word-dicts/2015-07-01/2015-07-01-00-00.dict","rb") )
 
     print("there are {0} unique words in this corpus".format(str(len(allwordcounts))))
 
@@ -620,7 +620,7 @@ def loadTwitter():
 def loadGBooks():
     """Load all of google books, which has already been combined for conveinence."""
 
-    fname = "data/googlebooks/years/all-years.pickle"
+    fname = "../data/googlebooks/years/all-years.pickle"
     allwordcounts = pickle.load( open( fname , "rb" ) )
 
     print("there are {0} unique words in this corpus".format(str(len(allwordcounts))))
@@ -642,14 +642,14 @@ def pickleNYT():
 
     allwordcounts = dict()
     for section in sections:
-        fname = "data/nyt/sections/NYT_{}.txt".format(section)
+        fname = "../data/nyt/sections/NYT_{}.txt".format(section)
         print(fname)
         f = open(fname,"r")
         raw_text = f.read()
         f.close()
         section_dict = dict()
         dictify_general(raw_text,section_dict)
-        fname = "data/nyt/sections/NYT_{}.dict".format(section)
+        fname = "../data/nyt/sections/NYT_{}.dict".format(section)
         pickle.dump( section_dict , open( fname , "wb" ) )
         for word in section_dict:
             if word in allwordcounts:
@@ -657,16 +657,16 @@ def pickleNYT():
             else:
                 allwordcounts[word] = section_dict[word]
 
-    fname = "data/nyt/all.dict"
+    fname = "../data/nyt/all.dict"
     pickle.dump( allwordcounts , open( fname , "wb" ) )
 
 def loadNYT():
     """Load all of NYT, which has already been combined for convienence."""
     
-    if not isfile("data/nyt/all.dict"):
+    if not isfile("../data/nyt/all.dict"):
         pickleNYT()
     
-    fname = "data/nyt/all.dict"
+    fname = "../data/nyt/all.dict"
     allwordcounts = pickle.load( open( fname , "rb" ) )
 
     print("there are {0} unique  words in this corpus".format(str(len(allwordcounts))))
@@ -707,145 +707,7 @@ def loadtxt():
 
     return allcountsListSorted,allwordsListSorted
 
-def make_coverage_plot(allcountsListSorted,allwordsListSorted,corpus_title):
-    titles = ["LabMT","ANEW","LIWC","MPQA","Liu","WK"]
-    maxCount = 15000
-    # maxCount = len(allcountsListSorted)
-    total = np.sum(allcountsListSorted[:maxCount])
 
-    def coverageMaker(wordList,sentimentTrie):
-        a = np.array([float(sentimentTrie.matcherTrieBool(word)) for word in wordList[:maxCount]])
-        b = np.cumsum(a)/(np.array(range(len(a)))+1)
-        return a,b
-
-    def totalCoverage(indices):
-        return indices*allcountsListSorted[:maxCount]
-
-    def covS(indices):
-        return np.sum(totalCoverage(indices))/total
-
-    def relativeCoverage(indices):
-        totalCov = totalCoverage(indices)
-        return np.cumsum(totalCov)/np.cumsum(allcountsListSorted[:maxCount])
-
-    # make them all as both dicts and tries, with no stopval
-    stopVal = 0.0
-    LabMT_trie = LabMT(stopVal=stopVal)
-
-    LIWC_trie = LIWC(stopVal=stopVal)
-    WK_trie = WK(stopVal=stopVal)
-    ANEW_trie = ANEW(stopVal=stopVal)
-    MPQA_trie = MPQA(stopVal=stopVal)
-    Liu_trie = Liu(stopVal=stopVal)
-
-    labMTcoverage,labMTcovP = coverageMaker(allwordsListSorted,LabMT_trie)
-    ANEWcoverage,ANEWcovP = coverageMaker(allwordsListSorted,ANEW_trie)
-    LIWCcoverage,LIWCcovP = coverageMaker(allwordsListSorted,LIWC_trie)
-    MPQAcoverage,MPQAcovP = coverageMaker(allwordsListSorted,MPQA_trie)
-    liucoverage,liucovP = coverageMaker(allwordsListSorted,Liu_trie)
-    WKcoverage,WKcovP = coverageMaker(allwordsListSorted,WK_trie)
-
-    allCoverage = [labMTcoverage,ANEWcoverage,LIWCcoverage,MPQAcoverage,liucoverage,WKcoverage]
-    allCovP = [labMTcovP,ANEWcovP,LIWCcovP,MPQAcovP,liucovP,WKcovP]
-    allCovPfinal = [labMTcovP[-1],ANEWcovP[-1],LIWCcovP[-1],MPQAcovP[-1],liucovP[-1],WKcovP[-1]]
-
-    save_individual_plots = False
-    if save_individual_plots:
-        plt.figure(num=None, figsize=(14, 9), dpi=600, facecolor="w", edgecolor="k")
-
-        for i in range(len(allCovP)):
-            plt.plot(range(maxCount),allCovP[i],linewidth=2)
-
-        plt.xlabel("Word Rank")
-        plt.ylabel("Percentage of individual words covered")
-
-        plt.legend(titles,loc="best")
-        mysavefig("word-coverage-by-rank-{0}.pdf".format(corpus_title),folder="figures/coverage")
-        # mysavefig("word-coverage-by-rank-{0}.png".format(corpus_title))
-        plt.close()
-
-        coveragesBySet = list(map(covS,allCoverage))
-
-        fig, ax = plt.subplots()
-        # ax.bar(range(5),coveragesBySet,0.6,color=["r","b","g","k","c"])
-
-        ax.bar(np.arange(len(allCoverage))+0.3,coveragesBySet,0.3,color="#ef8a62",)
-        ax.bar(np.arange(len(allCoverage)),allCovPfinal,0.3,color="#2b8cbe",)
-        ax.set_ylabel("Percentage")
-        ax.set_title("Percentage coverage over first "+str(maxCount)+" words")
-        # plt.legend(np.flipud(["Total Coverage","Individual Word Coverage"]),loc="best")
-        plt.legend(["Total Coverage","Individual Word Coverage"],loc="best")
-        ax.set_xlim([-.15,len(titles)-.3])
-        ax.set_xticks(np.arange(len(allCoverage))+.3)
-        ax.set_xticklabels( titles )
-        ax.set_ylim([0,1])
-        mysavefig("total-coverage-bar-chart-{0}.pdf".format(corpus_title),folder="figures/coverage")
-        # mysavefig("total-coverage-bar-chart-{0}.png".format(corpus_title))
-        plt.close()
-
-        coveragesBySet2 = list(map(relativeCoverage,allCoverage))
-
-        plt.figure(num=None, figsize=(14, 9), dpi=600, facecolor="w", edgecolor="k")
-        for i in range(len(coveragesBySet2)):
-            plt.plot(range(maxCount),coveragesBySet2[i],linewidth=2)
-        plt.xlabel("Word Rank")
-        plt.ylabel("Percentage of total words covered")
-        plt.legend(titles,loc="best")
-        mysavefig("relative-coverage-over-words-by-rank-{0}.pdf".format(corpus_title),folder="figures/coverage")
-        # mysavefig("relative-coverage-over-words-by-rank-{0}.png".format(corpus_title))
-        plt.close()
-    # endif 
-
-    # now the full subplot figure
-
-    plt.figure(num=None, figsize=(figwidth_onecol, figwidth_onecol*.35), dpi=600, facecolor="w", edgecolor="k")
-    ax = plt.subplot(131)
-
-    for i in range(len(allCovP)):
-        ax.plot(range(maxCount),allCovP[i],linewidth=2)
-
-    ax.set_xlabel("Word Rank",fontsize=12)
-    ax.set_ylabel("Percentage of individual words covered",fontsize=12)
-    ax.set_ylim([0,1])
-    ax.set_yticks([0,.2,.4,.6,.8,1.0])
-    # ax.legend(titles,loc="best",fontsize=10)
-    ax.set_xlim([0,maxCount])
-    ax.set_xticks([0,5000,10000,15000])
-
-    coveragesBySet2 = list(map(relativeCoverage,allCoverage))
-
-    ax = plt.subplot(132)
-
-    for i in range(len(coveragesBySet2)):
-        ax.plot(range(maxCount),coveragesBySet2[i],linewidth=2)
-    ax.set_xlabel("Word Rank",fontsize=12)
-    ax.set_ylabel("Percentage of total words covered",fontsize=12)
-    ax.legend(titles,loc="best",fontsize=10,ncol=2,framealpha=0.5)
-    ax.set_ylim([0,1])
-    ax.set_yticks([0,.2,.4,.6,.8,1.0])
-    ax.set_xlim([0,maxCount])
-    ax.set_xticks([0,5000,10000,15000])
-
-    coveragesBySet = list(map(covS,allCoverage))
-
-    ax = plt.subplot(133)
-
-    ax.bar(np.arange(len(allCoverage))+0.3,coveragesBySet,0.3,color="#ef8a62",)
-    ax.bar(np.arange(len(allCoverage)),allCovPfinal,0.3,color="#2b8cbe",)
-    ax.set_ylabel("Percentage",fontsize=12)
-    # ax.set_title("Percentage coverage over first "+str(maxCount)+" words")
-    # ax.legend(np.flipud(["Total Coverage","Individual Word Coverage"]),loc="best")
-    ax.legend(["Total Coverage","Individual Word\nCoverage"],loc="best",fontsize=10,framealpha=0.5)
-    ax.set_xlim([-.15,len(titles)-.3])
-    ax.set_xticks( np.arange( len( allCoverage ) ) +.3 )
-    ax.set_xticklabels( titles , fontsize=12 , rotation=45 )
-    ax.set_ylim( [0,1] )
-    ax.set_yticks( [0,.2,.4,.6,.8,1.0] )
-
-    plt.tight_layout(pad=0.0, w_pad=0.0, h_pad=0.5)
-
-    mysavefig("coverage-{0}.pdf".format(corpus_title),folder="figures/coverage")
-    plt.close()
 
 def sampleReviewsDict(numReviews,numSamples,filelist,wordsRE,prefix,test="LabMT-ANEW-LIWC-MPQA-Liu-WK"):
     """Sample from all of the review."""
@@ -1122,30 +984,6 @@ def make_movie_review_plots(titles,allLengths,allSamples,save_individual_each_di
         # mysavefig("movie-review-comparison.png".format(prefix),folder="figures/moviereviews")
         # plt.show()
 
-def coverage():
-    """Make each of the four main coverage plots."""
-
-    corpus = "twitter"
-    print("making coverage plot for {0}".format(corpus))
-    allcountsListSorted,allwordsListSorted = loadTwitter()
-    make_coverage_plot(allcountsListSorted,allwordsListSorted,corpus)
-
-    corpus = "movieReviews"
-    print("making coverage plot for {0}".format(corpus))
-    allcountsListSorted,allwordsListSorted = loadMovieReviews()
-    make_coverage_plot(allcountsListSorted,allwordsListSorted,corpus)
-
-    corpus = "googleBooks"
-    print("making coverage plot for {0}".format(corpus))
-    allcountsListSorted,allwordsListSorted = loadGBooks()
-    make_coverage_plot(allcountsListSorted,allwordsListSorted,corpus)
-
-    corpus = "nyt"
-    print("making coverage plot for {0}".format(corpus))
-    allcountsListSorted,allwordsListSorted = loadNYT()
-    make_coverage_plot(allcountsListSorted,allwordsListSorted,corpus)
-
-
 def reviewTest(test,allLengths,allSamples):
     """Do the full review test. Takes 20 minutes."""
 
@@ -1157,8 +995,8 @@ def reviewTest(test,allLengths,allSamples):
                 WK(stopVal=stopVal))    
 
     for flip in ["pos","neg"]:
-        files = ["data/moviereviews/txt_sentoken/{0}/{1}".format(flip,x.replace(".txt",""))
-                 for x in listdir("data/moviereviews/txt_sentoken/{0}/".format(flip)) if ".txt" in x]
+        files = ["../data/moviereviews/txt_sentoken/{0}/{1}".format(flip,x.replace(".txt",""))
+                 for x in listdir("../data/moviereviews/txt_sentoken/{0}/".format(flip)) if ".txt" in x]
         prefix = "{0}Scores".format(flip)
 
         # numReviews = int(sys.argv[3])
@@ -1205,13 +1043,13 @@ def gbook_timeseries(allDicts,save_shifts=True,use_cache=True):
 
             my_word_vec = np.zeros(len(my_senti_dict.scorelist))
 
-            csvfile = curr_date.strftime("data/googlebooks/years/%Y/all-100k-{0}.csv".format(my_senti_dict.corpus))
+            csvfile = curr_date.strftime("../data/googlebooks/years/%Y/all-100k-{0}.csv".format(my_senti_dict.corpus))
             if isfile(csvfile) and use_cache:
                 f = open(csvfile,"r")
                 my_word_vec = np.array(map(float,f.read().split("\n")))
                 f.close()
             else:
-                year_word_dict = pickle.load( open( curr_date.strftime("data/googlebooks/years/%Y/all-100k.pickle") , "rb" ) )
+                year_word_dict = pickle.load( open( curr_date.strftime("../data/googlebooks/years/%Y/all-100k.pickle") , "rb" ) )
                 my_word_vec = my_senti_dict.wordVecify(year_word_dict)
                 # write out the word vecs
                 f = open(csvfile,"w")
@@ -1246,8 +1084,8 @@ def gbook_timeseries(allDicts,save_shifts=True,use_cache=True):
 
                 inner_date = curr_date
                 while inner_date < curr_date.replace(year=curr_date.year+10):
-                    csvfile = inner_date.strftime("data/googlebooks/years/%Y/all-100k-{0}.csv".format(my_senti_dict.corpus))
-                    picklefile = inner_date.strftime("data/googlebooks/years/%Y/all-100k.pickle")
+                    csvfile = inner_date.strftime("../data/googlebooks/years/%Y/all-100k-{0}.csv".format(my_senti_dict.corpus))
+                    picklefile = inner_date.strftime("../data/googlebooks/years/%Y/all-100k.pickle")
                     print(csvfile)
                     if isfile(csvfile):
                         f = open(csvfile,"r")
@@ -1664,9 +1502,6 @@ def plot_twitter_correlations():
         mysavefig("twitter-correlations-all-{0}.pdf".format(resolution_i))
 
 if __name__ == "__main__": 
-    if sys.argv[1] == "coverage":
-        coverage()
-
     if sys.argv[1] == "movie-review-test":
         # let these be global....
         # (variable for the movie review test)
