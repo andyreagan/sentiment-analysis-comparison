@@ -1,0 +1,11 @@
+#PBS -l walltime=02:00:00
+# Name of job.
+#PBS -N makeTimeseries
+# Join STDERR TO STDOUT.  (omit this if you want separate STDOUT AND STDERR)
+#PBS -j oe
+
+cd /users/a/r/areagan/work/2015/03-sentiment-analysis-comparison
+
+# will go and make a "full" twitter timeseries
+/usr/bin/time -v python analyzeAll.py twitter-timeseries 2015-03-01 ${RES} ${DICT} ${STOPVAL}
+
